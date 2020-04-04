@@ -5,56 +5,51 @@ const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 
+/*
+ |--------------------------------------------------------------------------
+ | Mix Asset Management
+ |--------------------------------------------------------------------------
+ |
+ | Mix provides a clean, fluent API for defining some Webpack build steps
+ | for your Laravel application. By default, we are compiling the Sass
+ | file for the application as well as bundling up all the JS files.
+ |
+ */
+
+if (mix.inProduction()) {
+  mix.version();
+}
+
 mix
   .autoload({
-    jquery: ['$', 'window.jQuery', 'jQuery', 'window.$', 'jquery', 'window.jquery'],
+    jquery: ['$', 'window.jQuery', 'jQuery', 'window.$'],
     moment: ['moment', 'window.moment'],
     'pusher-js': ['Pusher', 'window.Pusher'],
   })
   .webpackConfig({
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './resources/js'),
+        '@': path.resolve(__dirname, 'resources/js'),
       },
-      extensions: [
-        '*',
-        '.js',
-        '.jsx',
-        '.vue',
-        '.ts',
-        '.tsx',
-      ],
+      extensions: ['.js', '.vue'],
     },
     module: {
-      rules: [
-        {
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules|tests)/,
-        },
-        {
-          test: /\.tsx?$/,
-          loader: 'ts-loader',
-          options: {
-            appendTsSuffixTo: [
-              /\.vue$/,
-            ],
-          },
-          exclude: /node_modules/,
-        },
-        {
-          // Exposes jQuery for use outside Webpack build
-          test: require.resolve('jquery'),
-          use: [{
-            loader: 'expose-loader',
-            options: 'jQuery',
-          }, {
-            loader: 'expose-loader',
-            options: '$',
-          }],
-        },
-      ],
+      rules: [{
+        enforce: 'pre',
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        exclude: /(node_modules|tests)/,
+      }, {
+        // Exposes jQuery for use outside Webpack build
+        test: require.resolve('jquery'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'jQuery',
+        }, {
+          loader: 'expose-loader',
+          options: '$',
+        }],
+      }],
     },
     plugins: [
       new StyleLintPlugin({
@@ -81,25 +76,7 @@ mix
         ],
       }),
     ],
-  });
-
-/*
- |--------------------------------------------------------------------------
- | Mix Asset Management
- |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
- |
- */
-
-mix
+  })
+  .sourceMaps(false, 'eval')
   .js('resources/js/app.js', 'public/js')
   .sass('resources/sass/app.scss', 'public/css');
-
-if (mix.config.production) {
-  mix.version();
-} else {
-  mix.sourceMaps();
-}

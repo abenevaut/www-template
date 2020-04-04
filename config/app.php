@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Template www'),
+    'name' => env('APP_NAME', 'www-template'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://template.benevaut.fr'),
+    'url' => env('APP_URL', 'https://template.benevaut.tech'),
 
     'asset_url' => env('ASSET_URL', null),
 

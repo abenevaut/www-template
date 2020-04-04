@@ -1,5 +1,4 @@
 ssh www-template@deploy.eu2.frbit.com php artisan down
-ssh www-template@deploy.eu2.frbit.com php artisan backup:run --only-db --filename $TRAVIS_JOB_NUMBER.zip
 ssh www-template@deploy.eu2.frbit.com php artisan config:clear
 ssh www-template@deploy.eu2.frbit.com php artisan route:clear
 ssh www-template@deploy.eu2.frbit.com php artisan view:clear

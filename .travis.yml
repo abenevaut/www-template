@@ -30,6 +30,23 @@ jobs:
   fast_finish: true
   include:
   - stage: test
+    name: abenevaut/www-template PHP Standard PSR12
+    language: php
+    php: 7.3
+    env:
+      - CODECLIMATE=off
+      - APP_ENV=testing
+    before_install:
+      - printf "\n" | pecl install imagick
+    install:
+      - composer install -o --no-interaction --prefer-dist --no-suggest
+    script:
+      - vendor/bin/phpcs --standard=PSR12 app
+      - vendor/bin/phpcs --standard=PSR12 components
+      - vendor/bin/phpcs --standard=PSR12 database/factories
+      - vendor/bin/phpcs --standard=PSR12 routes
+      - vendor/bin/phpcs --standard=PSR12 tests --extensions=php
+  - stage: test
     name: abenevaut/www-template PHP
     language: php
     php: 7.3
@@ -57,37 +74,12 @@ jobs:
       - php artisan elfinder:publish
     script:
       - vendor/bin/phpunit
+      - php artisan test:check-coverage ./coverage/clover.xml 80
     after_script:
-      - php artisan file:aws:push coverage/clover.xml coverages/${TRAVIS_COMMIT}/clover.xml
-#  - stage: test
-#    name: abenevaut/www-template PHP
-#    language: php
-#    php: 7.4
-#    allow_failures: true
-#    env:
-#      - CODECLIMATE=off
-#      - APP_ENV=testing
-#    before_install:
-#      - |
-#        if [[ "$CODECLIMATE" = "on" ]]; then
-#          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-#          chmod +x ./cc-test-reporter
-#        fi
-#      - printf "\n" | pecl install imagick
-#      - nvm install
-#      - nvm use
-#    install:
-#      - composer install -o --no-interaction --prefer-dist --no-suggest
-#      - npm install
-#    before_script:
-#      - |
-#        if [[ "$CODECLIMATE" = "on" ]]; then
-#          ./cc-test-reporter before-build
-#        fi
-#      - npm run prod
-#      - php artisan elfinder:publish
-#    script:
-#      - vendor/bin/phpunit
+      - |
+        if [[ "$CODECLIMATE" = "on" ]]; then
+          php artisan file:cloud:push coverage/clover.xml coverages/${TRAVIS_COMMIT}/clover.xml
+        fi
   - stage: test
     name: abenevaut/www-template JS&TS
     language: php
@@ -116,7 +108,10 @@ jobs:
     script:
       - npm test
     after_script:
-      - php artisan file:aws:push coverage/lcov.info coverages/${TRAVIS_COMMIT}/lcov.info
+      - |
+        if [[ "$CODECLIMATE" = "on" ]]; then
+          php artisan file:cloud:push coverage/lcov.info coverages/${TRAVIS_COMMIT}/lcov.info
+        fi
   - stage: coverage
     name: Send codeclimate coverage
     language: php
@@ -135,8 +130,8 @@ jobs:
     install:
       - composer install -o --no-interaction --prefer-dist --no-suggest
     script:
-      - php artisan file:aws:get coverages/${TRAVIS_COMMIT}/clover.xml coverage/clover.xml
-      - php artisan file:aws:get coverages/${TRAVIS_COMMIT}/lcov.info coverage/lcov.info
+      - php artisan file:cloud:get coverages/${TRAVIS_COMMIT}/clover.xml coverage/clover.xml
+      - php artisan file:cloud:get coverages/${TRAVIS_COMMIT}/lcov.info coverage/lcov.info
       - |
         if [[ "$CODECLIMATE" = "on" ]]; then
           ./cc-test-reporter format-coverage -t clover -o coverage/codeclimate.php.json coverage/clover.xml
@@ -145,8 +140,8 @@ jobs:
           ./cc-test-reporter upload-coverage
         fi
     after_script:
-      - php artisan file:aws:rm coverages/${TRAVIS_COMMIT}/clover.xml
-      - php artisan file:aws:rm coverages/${TRAVIS_COMMIT}/lcov.info
+      - php artisan file:cloud:rm coverages/${TRAVIS_COMMIT}/clover.xml
+      - php artisan file:cloud:rm coverages/${TRAVIS_COMMIT}/lcov.info
   - stage: deploy
     name: abenevaut/www-template
     language: php

@@ -1,4 +1,6 @@
-<?php namespace Tests\Unit\Domain\Users\Users\Repositories;
+<?php
+
+namespace Tests\Unit\Domain\Users\Users\Repositories;
 
 use template\Domain\Users\Users\Events\UserCreatedEvent;
 use template\Domain\Users\Users\Events\UserDeletedEvent;
@@ -18,7 +20,6 @@ use Tests\TestCase;
 
 class UsersRepositoryEloquentTest extends TestCase
 {
-
     use DatabaseMigrations;
 
     /**
@@ -114,23 +115,15 @@ class UsersRepositoryEloquentTest extends TestCase
         $this->assertEquals(
             [
                 User::ROLE_ADMINISTRATOR,
-                User::ROLE_ACCOUNTANT,
-                User::ROLE_CUSTOMER
+                User::ROLE_CUSTOMER,
             ],
-            $this->r_users->getRoles()->keys()->toArray()
+            $this->r_users->getRoles()->toArray()
         );
     }
 
     public function testCivilities()
     {
-        $this->assertEquals(
-            [
-                User::CIVILITY_MADAM,
-                User::CIVILITY_MISS,
-                User::CIVILITY_MISTER
-            ],
-            $this->r_users->getCivilities()->keys()->toArray()
-        );
+        $this->assertEquals(User::CIVILITIES, $this->r_users->getCivilities()->toArray());
     }
 
     public function testLocales()
@@ -281,7 +274,7 @@ class UsersRepositoryEloquentTest extends TestCase
         $user = factory(User::class)->create();
 
         $repositoryUser = $this->r_users->getUser($user->id);
-        $this->assertEquals((new UsersListTransformer)->transform($user), $repositoryUser['data']);
+        $this->assertEquals((new UsersListTransformer())->transform($user), $repositoryUser['data']);
     }
 
     public function testIsUserDeletingHisAccount()

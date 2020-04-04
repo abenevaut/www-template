@@ -1,25 +1,31 @@
-<?php namespace template\Domain\Users\Users\Repositories;
+<?php
+
+namespace template\Domain\Users\Users\Repositories;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Validation\Validator as ContractsValidator;
+use template\Infrastructure\Interfaces\Domain\Users\Users\UserCivilitiesInterface;
 use template\Domain\Users\Users\{
     User,
     Repositories\UsersRegistrationsRepositoryInterface
 };
 
-class UsersRegistrationsRepositoryEloquent extends UsersRepositoryEloquent implements UsersRegistrationsRepositoryInterface
+class UsersRegistrationsRepositoryEloquent extends UsersRepositoryEloquent implements
+    UsersRegistrationsRepositoryInterface
 {
 
     /**
      * @var array
      */
     protected $registrationRules = [
-        'civility' => 'required|in:' . User::CIVILITY_MADAM . ','
-            . User::CIVILITY_MISS . ',' . User::CIVILITY_MISTER,
-        'first_name' => 'required|max:100',
-        'last_name' => 'required|max:100',
+        'civility' => 'in:'
+            . User::CIVILITY_MADAM . ','
+            . User::CIVILITY_MISS . ','
+            . User::CIVILITY_MISTER,
+        'first_name' => 'max:100',
+        'last_name' => 'max:100',
         'email' => 'required|email|max:80|unique:users',
-        'password' => 'required|min:6|confirmed',
+        'password' => 'required|confirmed|min:8',
     ];
 
     /**
@@ -35,11 +41,11 @@ class UsersRegistrationsRepositoryEloquent extends UsersRepositoryEloquent imple
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function registerUser(
-        string $civility,
-        string $first_name,
-        string $last_name,
         string $email,
         string $password,
+        string $civility = UserCivilitiesInterface::CIVILITY_MADAM,
+        string $first_name = null,
+        string $last_name = null,
         string $locale = User::DEFAULT_LOCALE,
         string $timezone = User::DEFAULT_TZ
     ): User {

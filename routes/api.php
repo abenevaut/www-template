@@ -27,8 +27,25 @@ Route::group(
             ],
             function () {
                 Route::get('logout', 'LoginController@logout');
+            }
+        );
+    }
+);
+
+Route::group(
+    [
+        'prefix' => 'v1',
+        'namespace' => 'Api\V1',
+    ],
+    function () {
+        Route::group(['namespace' => 'Users'], function () {
+            Route::model('profile', \template\Domain\Users\Users\User::class);
+            Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
+                Route::resource('profiles', 'ProfilesController', ['only' => ['index']]);
             });
-    });
+        });
+    }
+);
 
 Route::group(
     [
@@ -48,4 +65,5 @@ Route::group(
             });
             Route::resource('users', 'UsersController', ['only' => ['show']]);
         });
-    });
+    }
+);

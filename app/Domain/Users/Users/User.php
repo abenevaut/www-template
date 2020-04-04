@@ -2,20 +2,21 @@
 
 namespace template\Domain\Users\Users;
 
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Passport\HasApiTokens;
 use template\Domain\Users\Profiles\Profile;
 use template\Infrastructure\Interfaces\Domain\Users\{
     Users\HandshakableInterface,
     Users\UserCivilitiesInterface,
+    Users\UserGendersInterface,
     Users\UserRolesInterface
 };
 use template\Infrastructure\Interfaces\Domain\{
     Locale\LocalesInterface,
     Locale\TimeZonesInterface
 };
-use template\Infrastructure\Contracts\
-{
+use template\Infrastructure\Contracts\{
     Model\AuthenticatableModelAbstract,
     Model\IdentifiableTrait,
     Model\Notifiable,
@@ -30,19 +31,21 @@ use template\Domain\Users\Leads\{
 };
 use template\Domain\Users\Profiles\Traits\ProfileableTrait;
 use template\Domain\Users\ProvidersTokens\ProviderToken;
-use template\Domain\Users\Users\
-{
+use template\Domain\Users\Users\{
     Notifications\CreatedAccountByAdministrator,
     Notifications\ResetPassword,
-    Traits\NamableTrait
+    Traits\NamableTrait,
+    Traits\GenrableTrait
 };
 
 class User extends AuthenticatableModelAbstract implements
     UserCivilitiesInterface,
+    UserGendersInterface,
     UserRolesInterface,
     LocalesInterface,
     TimeZonesInterface,
-    HandshakableInterface
+    HandshakableInterface,
+    HasLocalePreference
 {
     use HasApiTokens;
     use Notifiable;
@@ -50,6 +53,7 @@ class User extends AuthenticatableModelAbstract implements
     use SoftDeletes;
     use HandshakeNotificationTrait;
     use NamableTrait;
+    use GenrableTrait;
     use ProfileableTrait;
     use RouteKeyNameUniquidTrait;
     use TimeStampsTz;
@@ -95,6 +99,16 @@ class User extends AuthenticatableModelAbstract implements
     protected $with = [
         'profile',
     ];
+
+    /**
+     * Get the user's preferred locale.
+     *
+     * @return string
+     */
+    public function preferredLocale()
+    {
+        return $this->locale;
+    }
 
     /**
      * Send the password reset notification.
@@ -164,16 +178,6 @@ class User extends AuthenticatableModelAbstract implements
     }
 
     /**
-     * Is the user accountant ?
-     *
-     * @return bool
-     */
-    public function getIsAccountantAttribute()
-    {
-        return self::ROLE_ACCOUNTANT === $this->role;
-    }
-
-    /**
      * Get the lead that owns the user.
      */
     public function lead()
@@ -192,7 +196,7 @@ class User extends AuthenticatableModelAbstract implements
     /**
      * Get the providers with tokens that owns the user.
      */
-    public function providers_tokens()
+    public function providersTokens()
     {
         return $this->hasMany(ProviderToken::class);
     }

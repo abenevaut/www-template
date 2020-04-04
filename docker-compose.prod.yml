@@ -1,1 +1,65 @@
 version: '3.7'
+
+volumes:
+  mysql:
+    driver: local
+  redis:
+    driver: local
+  elasticsearch:
+    driver: local
+
+services:
+
+  ### PHP Worker Container #####################################
+
+  php-worker:
+    image: abenevaut/laradock-php-worker:${APP_TAG:-latest}
+    volumes:
+      - ${DOCKER_PROJECT_PATH}:/var/www:cached
+      - ${DOCKER_STORAGE_PATH}/php-worker/supervisord.d:/etc/supervisord.d
+    depends_on:
+      - workspace
+    extra_hosts:
+      - "dockerhost:10.0.75.1"
+    networks:
+      - backend
+
+  ### Redis Container #########################################
+
+  redis:
+    image: abenevaut/laradock-redis:${APP_TAG:-latest}
+    volumes:
+      - ${DOCKER_STORAGE_PATH}/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+
+  ### ElasticSearch ########################################
+
+  elasticsearch:
+    image: abenevaut/laradock-elasticsearch:${APP_TAG:-latest}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "${SCOUT_ELASTIC_PORT}:9200"
+      - "${DOCKER_ELASTICSEARCH_PUBLIC_NODE_PORT}:9300"
+    depends_on:
+      - php-fpm
+    networks:
+      - frontend
+      - backend
+
+  ### Kibana ##############################################
+
+  kibana:
+    image: abenevaut/laradock-kibana:${APP_TAG:-latest}
+    ports:
+      - "${DOCKER_KIBANA_PUBLIC_PORT}:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - frontend
+      - backend

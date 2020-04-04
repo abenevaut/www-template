@@ -2,25 +2,30 @@
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <meta charset="UTF-8">
-<link rel="apple-touch-icon" sizes="57x57" href="{{ asset('/apple-icon-57x57.png') }}">
-<link rel="apple-touch-icon" sizes="60x60" href="{{ asset('/apple-icon-60x60.png') }}">
-<link rel="apple-touch-icon" sizes="72x72" href="{{ asset('/apple-icon-72x72.png') }}">
-<link rel="apple-touch-icon" sizes="76x76" href="{{ asset('/apple-icon-76x76.png') }}">
-<link rel="apple-touch-icon" sizes="114x114" href="{{ asset('/apple-icon-114x114.png') }}">
-<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('/apple-icon-120x120.png') }}">
-<link rel="apple-touch-icon" sizes="144x144" href="{{ asset('/apple-icon-144x144.png') }}">
-<link rel="apple-touch-icon" sizes="152x152" href="{{ asset('/apple-icon-152x152.png') }}">
-<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/apple-icon-180x180.png') }}">
+@if (Route::currentRouteNamed(Route::currentRouteName()))
+@foreach(\template\Infrastructure\Interfaces\Domain\Locale\LocalesInterface::LOCALES as $locale)
+    <link rel="alternate" hreflang="{{ $locale }}" href="{{ route(Route::currentRouteName(), ['locale' => $locale]) }}" />
+@endforeach
+@endif
+<link rel="apple-touch-icon" sizes="57x57" href="{{ asset('/images/apple-icon-57x57.png') }}">
+<link rel="apple-touch-icon" sizes="60x60" href="{{ asset('/images/apple-icon-60x60.png') }}">
+<link rel="apple-touch-icon" sizes="72x72" href="{{ asset('/images/apple-icon-72x72.png') }}">
+<link rel="apple-touch-icon" sizes="76x76" href="{{ asset('/images/apple-icon-76x76.png') }}">
+<link rel="apple-touch-icon" sizes="114x114" href="{{ asset('/images/apple-icon-114x114.png') }}">
+<link rel="apple-touch-icon" sizes="120x120" href="{{ asset('/images/apple-icon-120x120.png') }}">
+<link rel="apple-touch-icon" sizes="144x144" href="{{ asset('/images/apple-icon-144x144.png') }}">
+<link rel="apple-touch-icon" sizes="152x152" href="{{ asset('/images/apple-icon-152x152.png') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/images/apple-icon-180x180.png') }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="icon" type="image/png" sizes="192x192" href="{{ asset('/android-icon-192x192.png') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/favicon-32x32.png') }}">
-<link rel="icon" type="image/png" sizes="96x96" href="{{ asset('/favicon-96x96.png') }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/favicon-16x16.png') }}">
-<link rel="manifest" href="{{ asset('/manifest.json') }}">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ asset('/images/android-icon-192x192.png') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/images/favicon-32x32.png') }}">
+<link rel="icon" type="image/png" sizes="96x96" href="{{ asset('/images/favicon-96x96.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/images/favicon-16x16.png') }}">
+<link rel="manifest" href="{{ asset('/images/manifest.json') }}">
 <meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="{{ asset('/ms-icon-144x144.png') }}">
+<meta name="msapplication-TileImage" content="{{ asset('/images/ms-icon-144x144.png') }}">
 <meta name="theme-color" content="#ffffff">
 <title>@yield('title', config('app.name'))</title>
 <base href="{{ config('app.url') }}">
@@ -49,6 +54,7 @@
 <meta name="twitter:card" content="@yield('card', config('services.twitter.card'))" />
 <meta name="twitter:creator" content="{{ config('services.twitter.username') }}" />
 <meta name="twitter:site" content="{{ config('services.twitter.username') }}" />
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+<link href="{{ mix('css/app.css') }}" rel="stylesheet">
 <link rel="sitemap" type="application/xml" title="sitemap" href="{{ url('/sitemap.xml') }}" />
 @yield('css')
+@include('partials.googletag-head')

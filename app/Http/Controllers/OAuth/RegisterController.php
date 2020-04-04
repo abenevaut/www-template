@@ -69,14 +69,6 @@ class RegisterController extends ControllerAbstract
      */
     protected function create(array $data)
     {
-        return $this
-            ->r_users
-            ->registerUser(
-                $data['civility'],
-                $data['first_name'],
-                $data['last_name'],
-                $data['email'],
-                $data['password']
-            );
+        return $this->r_users->registerUser($data['email'], $data['password']);
     }
 }
