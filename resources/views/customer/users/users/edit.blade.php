@@ -134,18 +134,30 @@
                     </div>
                     {{ Form::close() }}
                 </div>
-                <div class="d-none d-md-block col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            {{ trans('users.profiles.providers_tokens') }}
-                        </div>
-                        <div class="card-body">
-                            <a class="btn btn-block btn-primary btn-twitter" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::TWITTER]) }}">
-                                <span class="pull-left"><i class="fab fa-twitter"></i></span>
-                                <span class="bold">Lier Twitter</span>
-                            </a>
-                        </div>
-                    </div>
+{{--                <div class="d-none d-md-block col-md-4">--}}
+{{--                    <div class="card">--}}
+{{--                        <div class="card-header">--}}
+{{--                            {{ trans('users.profiles.providers_tokens') }}--}}
+{{--                        </div>--}}
+{{--                        <div class="card-body">--}}
+{{--                            <a class="btn btn-block btn-secondary btn-github" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::GITHUB]) }}">--}}
+{{--                                <span class="pull-left"><i class="fab fa-github"></i></span>--}}
+{{--                                <span class="bold">Lier Github</span>--}}
+{{--                            </a>--}}
+{{--                            <a class="btn btn-block btn-secondary btn-google" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::GOOGLE]) }}">--}}
+{{--                                <span class="pull-left"><i class="fab fa-google"></i></span>--}}
+{{--                                <span class="bold">Lier Google</span>--}}
+{{--                            </a>--}}
+{{--                            <a class="btn btn-block btn-secondary btn-twitter" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::TWITTER]) }}">--}}
+{{--                                <span class="pull-left"><i class="fab fa-twitter"></i></span>--}}
+{{--                                <span class="bold">Lier Twitter</span>--}}
+{{--                            </a>--}}
+{{--                            <a class="btn btn-block btn-secondary btn-linkedin" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::LINKEDIN]) }}">--}}
+{{--                                <span class="pull-left"><i class="fab fa-linkedin"></i></span>--}}
+{{--                                <span class="bold">Lier Linkedin</span>--}}
+{{--                            </a>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="alert alert-info">
                         <h5><i class="icon fas fa-info mr-2"></i>{{ trans('global.information') }}</h5>
                         {!! trans('users.change_email', ['contact_rul' => route('anonymous.contact.index')]) !!}

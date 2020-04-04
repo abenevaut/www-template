@@ -34,10 +34,6 @@ return [
                 'tmbURL' => env('APP_URL'),
                 'glideURL' => 'files/thumbnail',
             ],
-            's3' => [
-                'alias' => 'Cloud',
-                'accessControl' => 'Barryvdh\Elfinder\Elfinder::checkAccess',
-            ],
         ],
     ],
 
