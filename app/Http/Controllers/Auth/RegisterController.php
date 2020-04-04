@@ -2,7 +2,11 @@
 
 namespace template\Http\Controllers\Auth;
 
+use GuzzleHttp\Client as GuzzleHttpClient;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use template\Domain\Users\Profiles\Repositories\ProfilesRepositoryEloquent;
 use template\Domain\Users\Users\Repositories\UsersRegistrationsRepositoryEloquent;
 use template\Infrastructure\Contracts\Controllers\ControllerAbstract;
 use template\Domain\Users\Users\User;
@@ -10,7 +14,6 @@ use template\Domain\Users\Users\User;
 class RegisterController extends ControllerAbstract
 {
     use RegistersUsers;
-    use AuthRedirectTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -24,19 +27,33 @@ class RegisterController extends ControllerAbstract
     */
 
     /**
-     * @var UsersRegistrationsRepositoryEloquent|null
+     * @var UsersRegistrationsRepositoryEloquent
      */
-    protected $r_users = null;
+    protected $r_users;
+
+    /**
+     * @var ProfilesRepositoryEloquent
+     */
+    protected $r_profiles;
+
+    /**
+     * @var string
+     */
+    protected $redirectTo = '/';
 
     /**
      * RegisterController constructor.
      *
      * @param UsersRegistrationsRepositoryEloquent $r_users
+     * @param ProfilesRepositoryEloquent $r_profiles
      */
-    public function __construct(UsersRegistrationsRepositoryEloquent $r_users)
-    {
+    public function __construct(
+        UsersRegistrationsRepositoryEloquent $r_users,
+        ProfilesRepositoryEloquent $r_profiles
+    ) {
         $this->middleware('guest');
         $this->r_users = $r_users;
+        $this->r_profiles = $r_profiles;
     }
 
     /**
@@ -47,19 +64,34 @@ class RegisterController extends ControllerAbstract
     public function showRegistrationForm()
     {
         return view('auth.register', [
-            'civilities' => $this->r_users->getCivilities()
+            'civilities' => $this->r_users->getCivilities(),
         ]);
     }
 
     /**
-     * Show the message that explains registrations are closed.
+     * Handle a registration request for the application.
+     *
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function showNoRegistration()
+    public function register(Request $request)
     {
-        // @todo xABE : Remove at the end of beta
-        return view('auth.noregistration');
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            return redirect(route('register'))
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = $this->create($request->all());
+        event(new Registered($user));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
     }
 
     /**
@@ -84,14 +116,6 @@ class RegisterController extends ControllerAbstract
      */
     protected function create(array $data)
     {
-        return $this
-            ->r_users
-            ->registerUser(
-                $data['civility'],
-                $data['first_name'],
-                $data['last_name'],
-                $data['email'],
-                $data['password']
-            );
+        return $this->r_users->registerUser($data['email'], $data['password']);
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace template\Domain\Users\Profiles\Transformers;
+<?php
+
+namespace template\Domain\Users\Profiles\Transformers;
 
 use template\Infrastructure\Contracts\Transformers\TransformerAbstract;
 use template\Domain\Users\Profiles\Profile;
@@ -15,7 +17,7 @@ class ProfilesListTransformer extends TransformerAbstract
      */
     public function transform(Profile $model)
     {
-        $data = [
+        return [
             'family_situation' => [
                 'key' => $model->family_situation,
                 'trans' => trans('profiles.family_situation.' . $model->family_situation),
@@ -37,7 +39,5 @@ class ProfilesListTransformer extends TransformerAbstract
                 'civility' => $model->user->civility,
             ],
         ];
-
-        return $data;
     }
 }

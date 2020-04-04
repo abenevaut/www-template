@@ -4,7 +4,7 @@
 
 @section('content')
     <section class="content-header">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>{{ trans('errors.404_title') }}</h1>
@@ -17,7 +17,7 @@
             <h2 class="headline text-warning">404</h2>
             <div class="error-content">
                 <h3>
-                    <i class="fas fa-exclamation-triangle text-warning"></i> {{ trans('errors.404_title') }}
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>{{ trans('errors.404_title') }}
                 </h3>
                 <p>
                     {{ trans('errors.404_description') }}

@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     /*
@@ -16,6 +17,7 @@ return [
     'throttle' => 'Tentatives de connexion trop nombreuses. Veuillez essayer de nouveau dans :seconds secondes.',
 
     'register' => 'S\'inscrire',
+    'registration' => 'Inscription',
     'register_baseline' => 'Formulaire d\'inscription',
     'remember_me' => 'Se souvenir de moi',
 
@@ -26,11 +28,15 @@ return [
     'password_reset_text' => 'Cliquer sur le bouton ci-dessous, puis compléter le formulaire de mise à jour de mot de passe.',
     'password_reset_footer_link' => 'Si votre boite mail ne vous permet pas de cliquer sur le bouton ci-dessus pour mettre à jour votre mot de passe,<br/>copier ce lien directement dans votre navigateur :',
 
-
     'login' => 'Se connecter',
+    'login_twitter' => 'Connectez-vous via Twitter',
     'keep_loged_in' => 'Restez connecté',
     'logout' => 'Se déconnecter',
     'login_message_success' => 'Vous êtes maintenant connecté(e)',
+    'message_password_reset_success' => 'Votre mot de passe a été mis à jour',
+
+    'login_with_provider_failed' => 'Ce compte :provider n\'est lié à aucun compte utilisateur, veuillez-vous connecter avec vos identifiants habituels puis lier votre compte pour utiliser le système de connexion sociale',
+    'link_provider_success' => 'La liaison de votre compte :provider avec votre compte utilisateur c\'est correctement déroulée',
+    'link_provider_failed' => 'La liaison de votre compte :provider avec votre compte utilisateur n\'a pas pu se faire',
 
 ];
-

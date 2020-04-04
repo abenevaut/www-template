@@ -5,6 +5,7 @@ namespace template\Http\Controllers\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use template\Infrastructure\Contracts\Controllers\ControllerAbstract;
 use template\Domain\Users\ProvidersTokens\Repositories\ProvidersTokensRepositoryEloquent;
@@ -13,7 +14,6 @@ use template\Domain\Users\Users\Repositories\UsersRepositoryEloquent;
 class LoginController extends ControllerAbstract
 {
     use AuthenticatesUsers;
-    use AuthRedirectTrait;
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ class LoginController extends ControllerAbstract
     {
         $this->r_users->refreshSession($user);
 
-        return redirect()->intended($this->redirectTo());
+        return redirect(route('anonymous.dashboard'));
     }
 
     /**
@@ -87,13 +87,10 @@ class LoginController extends ControllerAbstract
         } catch (\InvalidArgumentException $exception) {
             app('sentry')->captureException($exception);
 
-            return redirect(route('anonymous.dashboard'))
+            return back()
                 ->with(
                     'message-error',
-                    sprintf(
-                        trans('auth.link_provider_failed'),
-                        ucfirst(strtolower($provider))
-                    )
+                    trans('auth.link_provider_failed', ['provider' => $provider]),
                 );
         }
     }
@@ -104,96 +101,80 @@ class LoginController extends ControllerAbstract
      *
      * @param $provider
      *
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function handleProviderCallback($provider)
     {
-        $providerUser = null;
-
         try {
             $providerUser = Socialite::driver($provider)->user();
-        } catch (\InvalidArgumentException $exception) {
-            app('sentry')->captureException($exception);
 
-            return redirect(route('anonymous.dashboard'))
-                ->with(
-                    'message-error',
-                    sprintf(
-                        trans('auth.link_provider_failed'),
-                        ucfirst(strtolower($provider))
-                    )
-                );
-        }
-
-        if (!empty($providerUser) && Auth::check()) {
-            $isTokenAvailableForUser = $this
-                ->r_providers_tokens
-                ->checkIfTokenIsAvailableForUser(
-                    Auth::user(),
-                    $providerUser->id,
-                    $provider
-                );
-
-            if ($isTokenAvailableForUser) {
-                $this
+            if ($providerUser && Auth::check()) {
+                $isTokenAvailableForUser = $this
                     ->r_providers_tokens
-                    ->saveUserTokenForProvider(
+                    ->checkIfTokenIsAvailableForUser(
                         Auth::user(),
-                        $provider,
                         $providerUser->id,
-                        $providerUser->token
+                        $provider
                     );
 
-                return redirect($this->redirectTo())
+                if ($isTokenAvailableForUser) {
+                    $this
+                        ->r_providers_tokens
+                        ->saveUserTokenForProvider(
+                            Auth::user(),
+                            $provider,
+                            $providerUser->id,
+                            $providerUser->token
+                        );
+
+                    return redirect(route('customer.users.edit', ['user' => Auth::user()->uniqid]))
+                        ->with(
+                            'message-success',
+                            trans('auth.link_provider_success', ['provider' => $provider])
+                        );
+                }
+
+                return redirect(route('customer.users.edit', ['user' => Auth::user()->uniqid]))
                     ->with(
-                        'message-success',
-                        sprintf(
-                            trans('auth.link_provider_success'),
-                            ucfirst(strtolower($provider))
-                        )
+                        'message-error',
+                        trans('auth.link_provider_failed', ['provider' => $provider])
                     );
             }
 
-            return redirect($this->redirectTo())
+            $providerToken = $this
+                ->r_providers_tokens
+                ->findUserForProvider($providerUser->id, $provider);
+
+            if ($providerToken) {
+                $this
+                    ->r_providers_tokens
+                    ->update(
+                        [
+                            'provider_token' => $providerUser->token,
+                        ],
+                        $providerToken->id
+                    );
+
+                Auth::login($providerToken->user, true);
+
+                return redirect(route('anonymous.dashboard'));
+            }
+        } catch (\InvalidArgumentException $exception) {
+            app('sentry')->captureException($exception);
+
+            return redirect(route('login'))
                 ->with(
                     'message-error',
-                    sprintf(
-                        trans('auth.link_provider_failed'),
-                        ucfirst(strtolower($provider))
-                    )
+                    trans('auth.link_provider_failed', ['provider' => $provider])
                 );
         }
-
-        $providerToken = $this
-            ->r_providers_tokens
-            ->findUserForProvider($providerUser->id, $provider);
-
-        if (!is_null($providerToken)) {
-            $this
-                ->r_providers_tokens
-                ->update(
-                    [
-                        'provider_token' => $providerUser->token,
-                    ],
-                    $providerToken->id
-                );
-
-            Auth::login($providerToken->user, true);
-
-            return redirect($this->redirectTo());
-        }
-
-        /*
-         * @xabe todo : try to link account via provider user mail, create token and login the user
-         */
 
         return redirect(route('login'))
             ->with(
                 'message-error',
-                sprintf(
-                    trans('auth.login_with_provider_failed'),
-                    ucfirst(strtolower($provider))
-                )
+                trans('auth.login_with_provider_failed', ['provider' => $provider])
             );
     }
 }

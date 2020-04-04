@@ -11,10 +11,11 @@
 |
 */
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-
 use template\Domain\Users\Users\User;
 
+/**
+ * @var \Illuminate\Database\Eloquent\Factory $factory
+ */
 $factory
     ->define(User::class, function (Faker\Generator $faker) {
         static $password;
@@ -28,7 +29,7 @@ $factory
             'first_name' => $faker->firstName,
             'last_name' => $faker->lastName,
             'email' => $faker->unique()->safeEmail,
-            'password' => $password ?: $password = bcrypt('secret'),
+            'password' => $password ?: $password = bcrypt('azerty42'),
             'remember_token' => str_random(10),
         ];
     })
@@ -46,9 +47,6 @@ $factory
     ])
     ->state(User::class, User::ROLE_CUSTOMER, [
         'role' => User::ROLE_CUSTOMER,
-    ])
-    ->state(User::class, User::ROLE_ACCOUNTANT, [
-        'role' => User::ROLE_ACCOUNTANT,
     ])
     ->state(User::class, User::DEFAULT_LOCALE, [
         'locale' => User::DEFAULT_LOCALE,

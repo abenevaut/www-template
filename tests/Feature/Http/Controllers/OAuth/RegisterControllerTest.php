@@ -2,6 +2,7 @@
 
 namespace template\Http\Controllers\OAuth;
 
+use template\Domain\Users\Profiles\Profile;
 use Tests\TestCase;
 use Tests\OAuthTestCaseTrait;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -17,13 +18,12 @@ class RegisterControllerTest extends TestCase
     public function testRegistration()
     {
         $user = factory(User::class)->states(User::ROLE_CUSTOMER)->make();
-
+        $profile = factory(Profile::class)->make();
         $this
-            ->postJson('/api/oauth/register', $user->toArray() + [
-                    'password' => $this->getDefaultPassword(),
-                    'password_confirmation' => $this->getDefaultPassword()
-                ]
-            )
+            ->postJson('/api/oauth/register', $user->toArray() + $profile->toArray() + [
+                'password' => $this->getDefaultPassword(),
+                'password_confirmation' => $this->getDefaultPassword()
+            ])
             ->assertStatus(201)
             ->assertJsonStructure(['access_token', 'token_type', 'expires_at']);
     }

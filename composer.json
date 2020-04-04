@@ -12,52 +12,45 @@
         "coverage",
         "cms"
     ],
-    "license": "MIT",
+    "license": "GPL-3.0",
     "require": {
         "php": "^7.3.0",
         "ext-gd": "*",
         "ext-imagick": "*",
         "ext-json": "*",
-        "babenkoivan/scout-elasticsearch-driver": "^4.0",
-        "barryvdh/laravel-cors": "^0.11.4",
         "barryvdh/laravel-elfinder": "^0.4.2",
         "fedeisas/laravel-mail-css-inliner": "^2.3",
         "fideloper/proxy": "^4.0",
         "lab404/laravel-impersonate": "^1.4",
-        "laravel-notification-channels/twitter": "^3.0",
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.4",
-        "laravel/scout": "^7.1",
         "laravel/socialite": "^4.1",
-        "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.8",
         "league/csv": "^9.3",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/fractal": "^0.19.2",
         "league/glide": "^1.5",
         "league/glide-laravel": "^1.0",
-        "predis/predis": "^1.1",
         "prettus/l5-repository": "^2.6",
-        "pusher/pusher-php-server": "^4.0",
         "sentry/sentry-laravel": "^1.1",
-        "spatie/laravel-backup": "^6.3",
-        "spatie/laravel-honeypot": "^1.4",
+        "spatie/laravel-cookie-consent": "^2.11",
+        "spatie/laravel-honeypot": "^2.0",
         "spatie/laravel-medialibrary": "^7.10",
         "spatie/laravel-sitemap": "^5.3"
     },
     "require-dev": {
+        "ext-simplexml": "*",
+        "abenevaut/laravel-check-coverage": "dev-feat/retrieve-feature-from-pkmn-friends",
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.4",
-        "beyondcode/laravel-dump-server": "^1.0",
         "doctrine/dbal": "^2.9",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
-        "josiasmontag/laravel-redis-mock": "^1.2",
-        "laravel/dusk": "^5.5",
+        "martinlindhe/laravel-vue-i18n-generator": "^0.1.46",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^3.0",
         "phpunit/phpunit": "^8.3",
-        "sebastian/phpcpd": "^4.1",
+        "sebastian/phpcpd": "^5.0",
         "squizlabs/php_codesniffer": "^3.4"
     },
     "config": {
@@ -100,6 +93,16 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "vue-i18n": [
+            "@php artisan vue-i18n:generate --format es6",
+            "./node_modules/.bin/eslint resources/js/vue-i18n-locales.generated.js --fix"
         ]
+    },
+    "repositories": {
+        "abenevaut/laravel-check-coverage": {
+            "type": "path",
+            "url": "./components/abenevaut/laravel-check-coverage"
+        }
     }
 }

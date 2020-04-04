@@ -1,4 +1,6 @@
-<?php namespace template\Domain\Users\Profiles\Traits;
+<?php
+
+namespace template\Domain\Users\Profiles\Traits;
 
 use template\Domain\Users\Profiles\Repositories\ProfilesRepositoryEloquent;
 use template\Domain\Users\
@@ -36,28 +38,24 @@ trait ProfileableTrait
 
     /**
      * @param array $parameters
-     * @param array $emails
-     * @param array $phones
      *
      * @return mixed
      */
-    public function addProfile($parameters = [], $emails = [], $phones = [])
+    public function addProfile($parameters = [])
     {
         return app(ProfilesRepositoryEloquent::class)
-            ->createUserProfile($this, $parameters, $emails, $phones);
+            ->createUserProfile($this, $parameters);
     }
 
     /**
      * @param array $parameters
-     * @param array $emails
-     * @param array $phones
      *
      * @return mixed
      */
-    public function updateProfile($parameters = [], $emails = [], $phones = [])
+    public function updateProfile($parameters = [])
     {
         return app(ProfilesRepositoryEloquent::class)
-            ->updateUserProfile($this, $parameters, $emails, $phones);
+            ->updateUserProfile($this, $parameters);
     }
 
     /**
@@ -67,23 +65,5 @@ trait ProfileableTrait
     {
         return app(ProfilesRepositoryEloquent::class)
             ->deleteUserProfile($this);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProfileEmails()
-    {
-        return app(ProfilesRepositoryEloquent::class)
-            ->getProfileEmails($this);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getProfilePhones()
-    {
-        return app(ProfilesRepositoryEloquent::class)
-            ->getProfilePhones($this);
     }
 }

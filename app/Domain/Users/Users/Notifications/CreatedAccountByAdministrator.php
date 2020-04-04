@@ -1,4 +1,6 @@
-<?php namespace template\Domain\Users\Users\Notifications;
+<?php
+
+namespace template\Domain\Users\Users\Notifications;
 
 use template\Infrastructure\Interfaces\Queues\ShouldQueueInterface;
 use template\Infrastructure\Contracts\
@@ -18,9 +20,9 @@ class CreatedAccountByAdministrator extends Notification
 {
 
     /**
-     * @var User|null
+     * @var User
      */
-    protected $user = null;
+    protected $user;
 
     /**
      * CreatedAccountByAdministrator constructor.
@@ -54,7 +56,7 @@ class CreatedAccountByAdministrator extends Notification
     public function toMail($notifiable)
     {
         return (new CustomerMailMessage())
-            ->subject(trans('mails.created_account_by_administrator_subject'))
+            ->subject(trans('users.created_account_by_administrator_subject'))
             ->view(
                 'emails.users.users.created_account_by_administrator',
                 ['civility_name' => $this->user->civility_name]

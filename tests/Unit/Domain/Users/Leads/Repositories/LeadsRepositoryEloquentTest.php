@@ -1,4 +1,6 @@
-<?php namespace Tests\Unit\Domain\Users\Leads\Repositories;
+<?php
+
+namespace Tests\Unit\Domain\Users\Leads\Repositories;
 
 use template\Domain\Users\Leads\Events\LeadCreatedEvent;
 use template\Domain\Users\Leads\Events\LeadDeletedEvent;
@@ -13,7 +15,6 @@ use template\Domain\Users\Leads\Repositories\LeadsRepositoryEloquent;
 
 class LeadsRepositoryEloquentTest extends TestCase
 {
-
     use DatabaseMigrations;
 
     /**
@@ -71,26 +72,19 @@ class LeadsRepositoryEloquentTest extends TestCase
         });
         $this->assertDatabaseMissing('users_leads', $lead->toArray());
 
-        // @todo xABE : https://github.com/abenevaut/www/issues/234
+        // @todo xABE : Lead have to be soft deletable
 //        $this->assertDatabaseHas('users_leads', $lead->toArray());
 //        $this->assertSoftDeleted('users_leads', $lead->toArray());
     }
 
     public function testGetCivilities()
     {
-        $this->assertEquals(
-            [
-                User::CIVILITY_MADAM,
-                User::CIVILITY_MISS,
-                User::CIVILITY_MISTER
-            ],
-            $this->r_leads->getCivilities()->keys()->toArray()
-        );
+        $this->assertEquals(User::CIVILITIES, $this->r_leads->getCivilities()->toArray());
     }
 
     public function testAllWithTrashed()
     {
-        $this->markTestSkipped('@todo xABE : https://github.com/obsession/www/issues/234');
+        $this->markTestSkipped('@todo xABE : Lead have to be soft deletable');
 
         factory(Lead::class)->create();
         factory(Lead::class)->create();
@@ -100,7 +94,7 @@ class LeadsRepositoryEloquentTest extends TestCase
 
     public function testOnlyTrashed()
     {
-        $this->markTestSkipped('@todo xABE : https://github.com/obsession/www/issues/234');
+        $this->markTestSkipped('@todo xABE : Lead have to be soft deletable');
 
         factory(Lead::class)->create();
         factory(Lead::class)->create();
@@ -112,7 +106,7 @@ class LeadsRepositoryEloquentTest extends TestCase
     {
         factory(Lead::class)->create();
         $lead = factory(Lead::class)->create();
-        // @todo xABE : https://github.com/abenevaut/www/issues/234
+        // @todo xABE : Lead have to be soft deletable
 //        factory(Lead::class)->states('deleted')->create();
         $repositoryLead = $this
             ->r_leads
@@ -127,7 +121,7 @@ class LeadsRepositoryEloquentTest extends TestCase
     {
         factory(Lead::class)->create();
         $lead = factory(Lead::class)->create();
-        // @todo xABE : https://github.com/abenevaut/www/issues/234
+        // @todo xABE : Lead have to be soft deletable
 //        factory(Lead::class)->states('deleted')->create();
         $repositoryLead = $this
             ->r_leads
@@ -153,7 +147,7 @@ class LeadsRepositoryEloquentTest extends TestCase
          */
         factory(Lead::class)->create();
         $lead = factory(Lead::class)->create();
-        // @todo xABE : https://github.com/abenevaut/www/issues/234
+        // @todo xABE : Lead have to be soft deletable
 //        factory(Lead::class)->states('deleted')->create();
         $repositoryLead = $this
             ->r_leads
@@ -174,7 +168,7 @@ class LeadsRepositoryEloquentTest extends TestCase
     {
         factory(Lead::class)->create();
         $lead = factory(Lead::class)->create();
-        // @todo xABE : https://github.com/abenevaut/www/issues/234
+        // @todo xABE : Lead have to be soft deletable
 //        factory(Lead::class)->states('deleted')->create();
         $user = $this->r_leads->createUserFromLead($lead);
         $this->assertEquals($lead->email, $user->email);
