@@ -2,6 +2,10 @@
 
 Laravel template for web application
 
+```
+composer create-project --prefer-dist abenevaut/www-template blog
+```
+
 ## Welcome to the web-app wiki for developers!
 
 - [Set up your host](https://github.com/abenevaut/www-template/wiki/setup-your-host)
