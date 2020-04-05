@@ -14,6 +14,14 @@ services:
 
   php-worker:
     image: abenevaut/laradock-php-worker:${APP_TAG:-latest}
+    build:
+      context: ./laradock/php-worker
+      cache_from:
+        - abenevaut/laradock-php-worker:latest
+      args:
+        - PHP_VERSION=${DOCKER_PHP_VERSION}
+        - INSTALL_PGSQL=false
+        - INSTALL_BCMATH=false
     volumes:
       - ${DOCKER_PROJECT_PATH}:/var/www:cached
       - ${DOCKER_STORAGE_PATH}/php-worker/supervisord.d:/etc/supervisord.d
@@ -28,6 +36,10 @@ services:
 
   redis:
     image: abenevaut/laradock-redis:${APP_TAG:-latest}
+    build:
+      context: ./laradock/redis
+      cache_from:
+        - abenevaut/laradock-redis:latest
     volumes:
       - ${DOCKER_STORAGE_PATH}/redis:/data
     ports:
@@ -39,6 +51,16 @@ services:
 
   elasticsearch:
     image: abenevaut/laradock-elasticsearch:${APP_TAG:-latest}
+    build:
+      context: ./laradock/elasticsearch
+      cache_from:
+        - abenevaut/laradock-elasticsearch:latest
+    volumes:
+      - ${DOCKER_STORAGE_PATH}/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      - cluster.name=${APP_NAME}
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
@@ -56,6 +78,10 @@ services:
 
   kibana:
     image: abenevaut/laradock-kibana:${APP_TAG:-latest}
+    build:
+      context: ./laradock/kibana
+      cache_from:
+        - abenevaut/laradock-kibana:latest
     ports:
       - "${DOCKER_KIBANA_PUBLIC_PORT}:5601"
     depends_on:
