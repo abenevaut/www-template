@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\Route;
 use template\Domain\Users\Profiles\Profile;
 use template\Domain\Users\Users\User;
 use Tests\TestCase;
@@ -15,6 +16,10 @@ class RegisterControllerTest extends TestCase
 
     public function testToVisitRegister()
     {
+        if (!Route::has('register')) {
+            $this->markTestSkipped('route "register" is not defined');
+        }
+
         $this
             ->get('/register')
             ->assertSuccessful()
@@ -27,6 +32,10 @@ class RegisterControllerTest extends TestCase
 
     public function testToSubmitRegister()
     {
+        if (!Route::has('register')) {
+            $this->markTestSkipped('route "register" is not defined');
+        }
+
         $email = $this->faker->email;
         $profile = factory(Profile::class)->make();
         $this
@@ -45,6 +54,10 @@ class RegisterControllerTest extends TestCase
 
     public function testToSubmitRegisterWithInvalidEmail()
     {
+        if (!Route::has('register')) {
+            $this->markTestSkipped('route "register" is not defined');
+        }
+
         $email = $this->faker->word;
         $profile = factory(Profile::class)->make();
         $this
