@@ -8,6 +8,7 @@ use Laravel\Socialite\{
     One\User as SocialiteOAuthOneUser,
     Two\User as SocialiteOAuthTwoUser
 };
+use Illuminate\Support\Facades\Route;
 use template\Domain\Users\ProvidersTokens\ProviderToken;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -26,62 +27,74 @@ class LoginControllerTest extends TestCase
 
     public function testToVisitLoginPage()
     {
-        $this
+        $testResponse = $this
             ->get('/login')
             ->assertSuccessful()
             ->assertSeeText('Login')
-            ->assertSeeText('Change your password')
-            ->assertSeeText('Register');
+            ->assertSeeText('Change your password');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText('Register');
+        }
     }
 
     public function testToVisitLoginPageInFrench()
     {
-        $this
+        $testResponse = $this
             ->get('/login?locale=fr')
             ->assertSuccessful()
             ->assertSeeText('Se connecter')
-            ->assertSeeText('Changer votre mot de passe')
-            ->assertSeeText(e('S\'inscrire'));
+            ->assertSeeText('Changer votre mot de passe');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText(e('S\'inscrire'));
+        }
     }
 
     public function testToVisitLoginPageInGerman()
     {
-        $this
+        $testResponse = $this
             ->get('/login?locale=de')
             ->assertSuccessful()
             ->assertSeeText('Einloggen')
-            ->assertSeeText('Ändern Sie Ihr Passwort')
-            ->assertSeeText('Registrieren');
+            ->assertSeeText('Ändern Sie Ihr Passwort');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText('Registrieren');
+        }
     }
 
     public function testToVisitLoginPageInSpanish()
     {
-        $this
+        $testResponse = $this
             ->get('/login?locale=es')
             ->assertSuccessful()
             ->assertSeeText('Iniciar sesión')
-            ->assertSeeText('Cambia tu contraseña')
-            ->assertSeeText('Registrarse');
+            ->assertSeeText('Cambia tu contraseña');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText('Registrarse');
+        }
     }
 
     public function testToVisitLoginPageInRussian()
     {
-        $this
+        $testResponse = $this
             ->get('/login?locale=ru')
             ->assertSuccessful()
             ->assertSeeText('Авторизоваться')
-            ->assertSeeText('Изменить пароль')
-            ->assertSeeText('регистр');
+            ->assertSeeText('Изменить пароль');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText('регистр');
+        }
     }
 
     public function testToVisitLoginPageInChinese()
     {
-        $this
+        $testResponse = $this
             ->get('/login?locale=zh-CN')
             ->assertSuccessful()
             ->assertSeeText('登录')
-            ->assertSeeText('更改您的密码')
-            ->assertSeeText('寄存器');
+            ->assertSeeText('更改您的密码');
+        if (Route::has('register')) {
+            $testResponse->assertSeeText('寄存器');
+        }
     }
 
     public function testToLogAsAdministrator()
