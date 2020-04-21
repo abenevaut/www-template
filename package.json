@@ -1,5 +1,11 @@
 {
+    "name": "www-template",
+    "description": "template.benevaut.tech",
+    "author": "Antoine Benevaut",
+    "homepage": "http://template.benevaut.tech",
+    "bugs": "https://github.com/abenevaut/www-template/issues",
     "private": true,
+    "main": "resources/js/app.js",
     "engines": {
         "node": "^12"
     },
@@ -27,6 +33,7 @@
         "bootstrap": "^4.4.1",
         "copy-webpack-plugin": "^5.1.1",
         "cross-env": "^7.0",
+        "dotenv": "^8.2.0",
         "eslint": "^6.8.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-loader": "^3.0.3",
@@ -37,6 +44,8 @@
         "expect": "^25.1.0",
         "expose-loader": "^0.7.5",
         "false": "^0.0.4",
+        "favicons-webpack-plugin": "^3.0.1",
+        "flatpickr": "^4.6.3",
         "imagemin-mozjpeg": "^8.0.0",
         "imagemin-webpack-plugin": "^2.4.2",
         "jquery": "^3.2",

@@ -9,6 +9,7 @@ use template\Console\Commands\{
     Files\GetFileFromCloudCommand,
     Files\PushFileToCloudCommand,
     Files\RemoveFileFromCloudCommand,
+    VersionCommand,
     TestLaravelEchoCommand
 };
 
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
         PushFileToCloudCommand::class,
         RemoveFileFromCloudCommand::class,
         TestLaravelEchoCommand::class,
+        VersionCommand::class,
     ];
 
     /**
@@ -37,10 +39,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule
-            ->command('sitemap:generate')
-            ->everyFiveMinutes()
-            ->withoutOverlapping();
     }
 
     /**

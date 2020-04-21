@@ -1,9 +1,11 @@
+require('dotenv').config();
 const mix = require('laravel-mix');
 const path = require('path');
 const imageminMozjpeg = require('imagemin-mozjpeg');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 /*
  |--------------------------------------------------------------------------
@@ -74,6 +76,22 @@ mix
             maxMemory: 1000 * 512,
           }),
         ],
+      }),
+      new FaviconsWebpackPlugin({
+        logo: path.resolve(__dirname, 'resources/images/logo.png'),
+        prefix: 'images/',
+        cache: true,
+        inject: false,
+        mode: 'webapp',
+        devMode: 'webapp',
+        favicons: {
+          background: '#fff',
+          theme_color: '#fff',
+          icons: {
+            coast: false,
+            yandex: false,
+          },
+        },
       }),
     ],
   })
