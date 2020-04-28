@@ -18,7 +18,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Home')
             ->assertSeeText('Contact')
             ->assertSeeText('Terms of Service')
@@ -30,7 +30,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/?locale=fr')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Accueil')
             ->assertSeeText('Contact')
             ->assertSeeText(e('Conditions générales d\'utilisation'))
@@ -42,7 +42,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/?locale=de')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Home')
             ->assertSeeText('Contact')
             ->assertSeeText('Terms of Service')
@@ -54,7 +54,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/?locale=es')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Home')
             ->assertSeeText('Contact')
             ->assertSeeText('Terms of Service')
@@ -66,7 +66,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/?locale=ru')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Home')
             ->assertSeeText('Contact')
             ->assertSeeText('Terms of Service')
@@ -78,7 +78,7 @@ class UsersControllerTest extends TestCase
         $this
             ->get('/?locale=zh-CN')
             ->assertSuccessful()
-            ->assertSeeText('A Laravel Framework template for web application.')
+            ->assertSeeText('A Laravel Framework template for web application')
             ->assertSeeText('Home')
             ->assertSeeText('Contact')
             ->assertSeeText('Terms of Service')

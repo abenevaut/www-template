@@ -37,6 +37,7 @@ use template\Domain\Users\Users\{
     Traits\NamableTrait,
     Traits\GenrableTrait
 };
+use Yaquawa\Laravel\EmailReset\CanResetEmail;
 
 class User extends AuthenticatableModelAbstract implements
     UserCivilitiesInterface,
@@ -59,6 +60,7 @@ class User extends AuthenticatableModelAbstract implements
     use TimeStampsTz;
     use SoftDeletesTz;
     use Impersonate;
+    use CanResetEmail;
 
     /**
      * The attributes that are mass assignable.

@@ -2,15 +2,14 @@
 
 namespace template\App\Providers;
 
-use Illuminate\Support\{
-    Facades\URL,
-    ServiceProvider
-};
+use Illuminate\Support\{Facades\Config, Facades\URL, ServiceProvider};
 use Barryvdh\{
     Debugbar\ServiceProvider as DebugbarServiceProvider,
     LaravelIdeHelper\IdeHelperServiceProvider
 };
+use Illuminate\Notifications\Messages\MailMessage;
 use Sentry\Laravel\ServiceProvider as SentryServiceProvider;
+use Yaquawa\Laravel\EmailReset\Notifications\EmailResetNotification;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+        Config::set('sentry.release', Config::get('version.app_tag'));
+        EmailResetNotification::toMailUsing(function ($user, $token, $resetLink) {
+            return (new MailMessage())
+                ->subject(trans('auth.email_reset_title'))
+                ->view('emails.users.users.reset_email', compact('token'));
+        });
         // @codeCoverageIgnoreEnd
     }
 

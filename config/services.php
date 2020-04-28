@@ -19,7 +19,9 @@ return [
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
         'redirect' => env('GITHUB_CALLBACK_URL', '/login/github/callback'),
         'url' => 'https://github.com/abenevaut/www-template',
+        'nextgen' => 'https://github.com/abenevaut/www-template/milestones',
         'changelog' => 'https://github.com/abenevaut/www-template/milestones?state=closed',
+        'issues' => 'https://github.com/abenevaut/www-template/issues',
     ],
 
     \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::GOOGLE => [

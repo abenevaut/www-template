@@ -1,22 +1,23 @@
 @extends('customer.default')
 
-{{--@section('js')--}}
-{{--    <script type="text/javascript">--}}
-{{--      (function (W, D, $) {--}}
-{{--        $(D).ready(function() {--}}
-
-{{--          $('.select2').select2({--}}
-{{--            theme: 'bootstrap4'--}}
-{{--          });--}}
-
-{{--          $('#birth_date').datetimepicker({--}}
-{{--            locale: $('meta[name="locale"]').attr('content'),--}}
-{{--            format: 'L'--}}
-{{--          });--}}
-{{--        });--}}
-{{--      })(window, document, jQuery);--}}
-{{--    </script>--}}
-{{--@endsection--}}
+@section('js')
+    <script type="text/javascript">
+      (function (W, D, $) {
+        $(D).ready(function() {
+          $('#birth_date').flatpickr({
+            enableTime: false,
+            dateFormat: '{{ trans('global.date_format') }}',
+            defaultDate: '{{ old('birth_date', $profile['data']['birth_date']) ?? Carbon\Carbon::create(date('Y'), 1, 1, 0, 0, 0, $profile['data']['locale']['timezone'])->subYears(18)->format(trans('global.date_format')) }}',
+            minDate: '{{ Carbon\Carbon::create(date('Y'), 1, 1, 0, 0, 0, $profile['data']['locale']['timezone'])->subYears(80)->format(trans('global.date_format')) }}',
+            maxDate: '{{ Carbon\Carbon::create(date('Y'), 1, 1, 0, 0, 0, $profile['data']['locale']['timezone'])->subYears(8)->format(trans('global.date_format')) }}',
+            locale: {
+              firstDayOfWeek: 1
+            },
+          });
+        });
+      })(window, document, jQuery);
+    </script>
+@endsection
 
 @section('content')
     <section class="content-header">
@@ -28,7 +29,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('anonymous.dashboard') }}">{{ trans('users.home') }}</a>
+                            <a href="{{ route('anonymous.dashboard') }}"><i class="fas fa-tachometer-alt mr-2"></i>{{ trans('users.dashboard') }}</a>
                         </li>
                         <li class="breadcrumb-item active"><i class="fa fa-user mr-2"></i>{{ trans('users.profiles.edit.title') }}</li>
                     </ol>
@@ -48,7 +49,7 @@
                                 <div class="col-sm-9">
                                     <select name="locale" id="locale" class="select2 w-100 form-control">
                                         @foreach ($locales as $key)
-                                            <option value="{{ $key }}" @if ($key === $profile['data']['locale']['language']) selected="selected" @endif>
+                                            <option value="{{ $key }}" @if ($key === old('locale', $profile['data']['locale']['language'])) selected="selected" @endif>
                                                 {{ trans("users.locale.{$key}") }}
                                             </option>
                                         @endforeach
@@ -60,22 +61,16 @@
                                 <div class="col-sm-9">
                                     <select name="timezone" id="timezone" class="select2 w-100 form-control">
                                         @foreach ($timezones as $key)
-                                            <option value="{{ $key }}" @if ($key === $profile['data']['locale']['timezone']) selected="selected" @endif>{{ $key }}</option>
+                                            <option value="{{ $key }}" @if ($key === old('timezone', $profile['data']['locale']['timezone'])) selected="selected" @endif>{{ $key }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            Optional data to field
-                        </div>
+                    <div class="card card-info">
+                        <div class="card-header">{{ trans('users.profile.info.only_admin_can_view_following_data') }}</div>
                         <div class="card-body">
-                            <div class="alert alert-info">
-                                <h5><i class="icon fas fa-info mr-2"></i>{{ trans('global.information') }}</h5>
-                                Seul vous et les administrateurs peuvent consulter les informations suivantes.
-                            </div>
                             <div class="form-group row">
                                 <label for="civility" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.civility') }}</label>
                                 <div class="col-sm-9">
@@ -83,7 +78,7 @@
                                         @foreach ($civilities as $key => $trans)
                                             <option
                                                     value="{{ $key }}"
-                                                    @if (Auth::check() && $key === $profile['data']['user']['civility']) selected="selected" @endif
+                                                    @if (Auth::check() && $key === old('civility', $profile['data']['user']['civility'])) selected="selected" @endif
                                             >
                                                 {{ $trans }}
                                             </option>
@@ -94,37 +89,46 @@
                             <div class="form-group row">
                                 <label for="first_name" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.first_name') }}</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="first_name" placeholder="{{ trans('users.first_name') }}" name="first_name" value="{{ $profile['data']['user']['first_name'] }}">
+                                    <input type="text" class="form-control {{ $errors && $errors->has('first_name') ? 'is-invalid' : '' }}" id="first_name" placeholder="{{ trans('users.first_name') }}" name="first_name" value="{{ old('first_name', $profile['data']['user']['first_name']) }}">
+                                    @if ($errors && $errors->has('first_name'))
+                                        <div class="text-danger text-sm">{{ $errors->first('first_name') }}</div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="last_name" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.last_name') }}</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="last_name" placeholder="{{ trans('users.last_name') }}" name="last_name" value="{{ $profile['data']['user']['last_name'] }}">
+                                    <input type="text" class="form-control {{ $errors && $errors->has('last_name') ? 'is-invalid' : '' }}" id="last_name" placeholder="{{ trans('users.last_name') }}" name="last_name" value="{{ old('last_name', $profile['data']['user']['last_name']) }}">
+                                    @if ($errors && $errors->has('last_name'))
+                                        <div class="text-danger text-sm">{{ $errors->first('last_name') }}</div>
+                                    @endif
                                 </div>
                             </div>
-{{--                            <div class="form-group row">--}}
-{{--                                <label for="family_situation" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.family_situation') }}</label>--}}
-{{--                                <div class="col-sm-9">--}}
-{{--                                    <select name="family_situation" class="select2 w-100 form-control">--}}
-{{--                                        @foreach ($families_situations as $key => $trans)--}}
-{{--                                            <option value="{{ $key }}" @if ($key === $profile['data']['family_situation']['key']) selected="selected" @endif>{{ $trans }}</option>--}}
-{{--                                        @endforeach--}}
-{{--                                    </select>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <div class="form-group row">--}}
-{{--                                <label for="maiden_name" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.maiden_name') }}</label>--}}
-{{--                                <div class="col-sm-9">--}}
-{{--                                    <input type="text" class="form-control" id="maiden_name" placeholder="{{ trans('users.profiles.maiden_name') }}" name="maiden_name" value="{{ $profile['data']['maiden_name'] }}">--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                            <div class="form-group row">--}}
-{{--                                <label for="birth_date" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.birth_date') }}</label>--}}
-{{--                                <div class="col-sm-9">--}}
-{{--                                    <input type="text" class="form-control" id="birth_date" placeholder="{{ trans('users.profiles.birth_date') }}" name="birth_date" value="{{ $profile['data']['birth_date'] }}" data-target="#birth_date" data-toggle="datetimepicker">--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            {{--                            <div class="form-group row">--}}
+                            {{--                                <label for="family_situation" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.family_situation') }}</label>--}}
+                            {{--                                <div class="col-sm-9">--}}
+                            {{--                                    <select name="family_situation" class="select2 w-100 form-control">--}}
+                            {{--                                        @foreach ($families_situations as $key => $trans)--}}
+                            {{--                                            <option value="{{ $key }}" @if ($key === $profile['data']['family_situation']['key']) selected="selected" @endif>{{ $trans }}</option>--}}
+                            {{--                                        @endforeach--}}
+                            {{--                                    </select>--}}
+                            {{--                                </div>--}}
+                            {{--                            </div>--}}
+                            {{--                            <div class="form-group row">--}}
+                            {{--                                <label for="maiden_name" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.maiden_name') }}</label>--}}
+                            {{--                                <div class="col-sm-9">--}}
+                            {{--                                    <input type="text" class="form-control" id="maiden_name" placeholder="{{ trans('users.profiles.maiden_name') }}" name="maiden_name" value="{{ $profile['data']['maiden_name'] }}">--}}
+                            {{--                                </div>--}}
+                            {{--                            </div>--}}
+                            <div class="form-group row">
+                                <label for="birth_date" class="col-sm-3 col-form-label text-sm-right">{{ trans('users.profiles.birth_date') }}</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control {{ $errors && $errors->has('birth_date') ? 'is-invalid' : '' }}" id="birth_date" placeholder="{{ trans('users.profiles.birth_date') }}" name="birth_date" value="{{ old('birth_date', $profile['data']['birth_date']) }}" readonly="readonly"/>
+                                    @if ($errors && $errors->has('birth_date'))
+                                        <div class="text-danger text-sm">{{ $errors->first('birth_date') }}</div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card">
@@ -134,34 +138,45 @@
                     </div>
                     {{ Form::close() }}
                 </div>
-{{--                <div class="d-none d-md-block col-md-4">--}}
-{{--                    <div class="card">--}}
-{{--                        <div class="card-header">--}}
-{{--                            {{ trans('users.profiles.providers_tokens') }}--}}
-{{--                        </div>--}}
-{{--                        <div class="card-body">--}}
-{{--                            <a class="btn btn-block btn-secondary btn-github" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::GITHUB]) }}">--}}
-{{--                                <span class="pull-left"><i class="fab fa-github"></i></span>--}}
-{{--                                <span class="bold">Lier Github</span>--}}
-{{--                            </a>--}}
-{{--                            <a class="btn btn-block btn-secondary btn-google" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::GOOGLE]) }}">--}}
-{{--                                <span class="pull-left"><i class="fab fa-google"></i></span>--}}
-{{--                                <span class="bold">Lier Google</span>--}}
-{{--                            </a>--}}
-{{--                            <a class="btn btn-block btn-secondary btn-twitter" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::TWITTER]) }}">--}}
-{{--                                <span class="pull-left"><i class="fab fa-twitter"></i></span>--}}
-{{--                                <span class="bold">Lier Twitter</span>--}}
-{{--                            </a>--}}
-{{--                            <a class="btn btn-block btn-secondary btn-linkedin" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::LINKEDIN]) }}">--}}
-{{--                                <span class="pull-left"><i class="fab fa-linkedin"></i></span>--}}
-{{--                                <span class="bold">Lier Linkedin</span>--}}
-{{--                            </a>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                    <div class="alert alert-info">
-                        <h5><i class="icon fas fa-info mr-2"></i>{{ trans('global.information') }}</h5>
-                        {!! trans('users.change_email', ['contact_rul' => route('anonymous.contact.index')]) !!}
+                <div class="d-none d-md-block col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ trans('users.profiles.providers_tokens') }}
+                        </div>
+                        <div class="card-body">
+                            <a class="btn btn-block btn-primary btn-twitter" href="{{ route('login_provider', ['provider' => \template\Infrastructure\Interfaces\Domain\Users\ProvidersTokens\ProvidersInterface::TWITTER]) }}">
+                                <span class="pull-left"><i class="fab fa-twitter"></i></span>
+                                <span class="bold">{{ trans('auth.link_twitter') }}</span>
+                            </a>
+                        </div>
                     </div>
+
+                    {!! Form::open(['route' => ['customer.users.email', $profile['data']['user']['identifier']], 'class' => 'form-horizontal', 'role' => 'form', 'autoprimary' => 'off', 'novalidate' => 'novalidate', 'method' => 'POST']) !!}
+                    <div class="card">
+                        <div class="card-header">
+                            {{ trans('users.change_email') }}
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="input-group">
+                                    <input
+                                            type="text"
+                                            name="email"
+                                            class="form-control {{ $errors && $errors->has('email') ? 'is-invalid' : '' }}"
+                                            placeholder="{{ trans('users.email') }}"
+                                    />
+                                </div>
+                                @if ($errors && $errors->has('email'))
+                                    <div class="text-danger text-sm">{{ $errors->first('email') }}</div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" type="submit">{{ trans('global.record') }}</button>
+                        </div>
+                    </div>
+                    {{ Form::close() }}
+
                     {!! Form::open(['route' => ['customer.users.password', $profile['data']['user']['identifier']], 'class' => 'form-horizontal', 'role' => 'form', 'autoprimary' => 'off', 'novalidate' => 'novalidate', 'method' => 'PUT']) !!}
                     <div class="card">
                         <div class="card-header">

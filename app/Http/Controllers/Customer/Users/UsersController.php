@@ -6,8 +6,10 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use template\Domain\Users\Profiles\Repositories\ProfilesRepositoryEloquent;
+use template\Domain\Users\Users\Repositories\UsersRepositoryEloquent;
 use template\Domain\Users\Users\User;
 use template\Http\Request\Customer\Users\Profiles\ProfileFormRequest;
+use template\Http\Request\Customer\Users\Users\ChangeEmailFormRequest;
 use template\Http\Request\Customer\Users\Users\PasswordFormRequest;
 use template\Infrastructure\Contracts\Controllers\ControllerAbstract;
 
@@ -16,17 +18,23 @@ class UsersController extends ControllerAbstract
     use ResetsPasswords;
 
     /**
-     * @var null|ProfilesRepositoryEloquent
+     * @var UsersRepositoryEloquent
      */
-    protected $r_profiles = null;
+    protected $r_users;
+
+
+    protected $r_profiles;
 
     /**
      * UsersController constructor.
      *
-     * @param ProfilesRepositoryEloquent $r_profiles
+     * @param UsersRepositoryEloquent $r_users
      */
-    public function __construct(ProfilesRepositoryEloquent $r_profiles)
-    {
+    public function __construct(
+        UsersRepositoryEloquent $r_users,
+        ProfilesRepositoryEloquent $r_profiles
+    ) {
+        $this->r_users = $r_users;
         $this->r_profiles = $r_profiles;
     }
 
@@ -38,21 +46,29 @@ class UsersController extends ControllerAbstract
      */
     public function edit(User $user)
     {
-        return view(
-            'customer.users.users.edit',
-            [
-                'profile' => $this->r_profiles->getUserProfile($user),
-                'families_situations' => $this
-                    ->r_profiles
-                    ->getFamilySituations()
-                    ->mapWithKeys(function ($item) {
-                        return [$item => trans("users.profiles.family_situation.{$item}")];
-                    }),
-                'timezones' => $this->r_profiles->getTimezones(),
-                'locales' => $this->r_profiles->getLocales(),
-                'civilities' => $this->r_profiles->getCivilities(),
-            ]
-        );
+        $profile = $this->r_profiles->getUserProfile($user);
+        $families_situations = $this
+            ->r_profiles
+            ->getFamilySituations()
+            ->mapWithKeys(function ($item) {
+                return [$item => trans("users.profiles.family_situation.{$item}")];
+            });
+        $timezones = $this->r_users->getTimezones();
+        $locales = $this->r_users->getLocales();
+        $civilities = $this
+            ->r_users
+            ->getCivilities()
+            ->mapWithKeys(function ($item) {
+                return [$item => trans("users.civility.{$item}")];
+            });
+
+        return view('customer.users.users.edit', compact(
+            'profile',
+            'families_situations',
+            'timezones',
+            'locales',
+            'civilities',
+        ));
     }
 
     /**
@@ -66,9 +82,10 @@ class UsersController extends ControllerAbstract
      */
     public function update(User $user, ProfileFormRequest $request)
     {
+        $id = $user->uniqid;
         $this->r_profiles->updateUserProfileWithRequest($request, $user);
 
-        return redirect(route('customer.users.edit', ['id' => $user->uniqid]));
+        return redirect(route('customer.users.edit', compact('id')));
     }
 
     /**
@@ -96,5 +113,21 @@ class UsersController extends ControllerAbstract
         event(new PasswordReset($user));
 
         return redirect(route('customer.users.edit', ['id' => $user->uniqid]));
+    }
+
+    /**
+     * Request email update.
+     *
+     * @param User $user
+     * @param ChangeEmailFormRequest $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function changeEmail(User $user, ChangeEmailFormRequest $request)
+    {
+        $user->resetEmail($request->get('email'));
+
+        return redirect(route('customer.users.edit', ['id' => $user->uniqid]))
+            ->with('message-success', trans('auth.message_email_validation'));
     }
 }

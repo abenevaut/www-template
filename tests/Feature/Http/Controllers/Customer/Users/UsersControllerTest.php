@@ -3,15 +3,12 @@
 namespace Tests\Feature\Http\Controllers\Customer\Users;
 
 use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Contracts\Provider as SocialiteProvider;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\One\User as SocialiteOAuthOneUser;
-use template\Domain\Users\ProvidersTokens\ProviderToken;
-use template\Domain\Users\Users\User;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Yaquawa\Laravel\EmailReset\Notifications\EmailResetNotification;
 
 class UsersControllerTest extends TestCase
 {
@@ -157,5 +154,24 @@ class UsersControllerTest extends TestCase
                 'locale' => $user->locale,
             ])
             ->assertRedirect("/users/{$user->uniqid}/edit");
+    }
+
+    public function testToSubmitUpdateEmail()
+    {
+        $newEmail = $this->faker->email;
+        $user = $this->actingAsCustomer();
+        Notification::fake();
+        $this
+            ->assertAuthenticated()
+            ->from("/users/{$user->uniqid}/edit")
+            ->post("/users/email/{$user->uniqid}", [
+                'email' => $newEmail,
+            ])
+            ->assertRedirect("/users/{$user->uniqid}/edit");
+        $user->refresh();
+        $this->assertDatabaseHas('email_resets', [
+            'new_email' => $newEmail,
+        ]);
+        Notification::assertSentTo($user, EmailResetNotification::class);
     }
 }

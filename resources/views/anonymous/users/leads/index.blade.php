@@ -36,6 +36,10 @@
                         {!! trans('users.leads.baseline') !!}
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-9">
                 <div class="card">
                     {!! Form::open(['route' => ['anonymous.contact.store'], 'method' => 'POST', 'data-user_identifier' => (Auth::check() ? Auth::user()->uniqid : 0)]) !!}
                     @honeypot
@@ -45,12 +49,12 @@
                                 <div class="form-group">
                                     <select name="civility" id="civility" class="form-control" {{ Auth::check() ? 'readonly' : '' }}>
                                         @foreach ($civilities as $key)
-                                        <option
-                                                value="{{ $key }}"
-                                                @if (Auth::check() && $key === Auth::user()->civility) selected="selected" @endif
-                                        >
-                                            {{ trans("users.civility.{$key}") }}
-                                        </option>
+                                            <option
+                                                    value="{{ $key }}"
+                                                    @if (Auth::check() && $key === Auth::user()->civility) selected="selected" @endif
+                                            >
+                                                {{ trans("users.civility.{$key}") }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -149,6 +153,34 @@
                         </div>
                     </div>
                     {!! Form::close() !!}
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">{{ trans('global.our_news') }}</span>
+                                <span class="info-box-number text-center text-muted mb-0"><a href="{{ config('services.twitter.url') }}" target="_blank" rel="noopener" title="twitter.com"><i class="fab fa-twitter mr-2"></i>Twitter</a></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">{{ trans('global.next_features') }}</span>
+                                <span class="info-box-number text-center text-muted mb-0"><a href="{{ config('services.github.nextgen') }}" target="_blank" rel="noopener" title="github.com"><i class="fab fa-github mr-2"></i>Github</a></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-box bg-light">
+                            <div class="info-box-content">
+                                <span class="info-box-text text-center text-muted">{{ trans('global.bugs_reported') }}</span>
+                                <span class="info-box-number text-center text-muted mb-0"><a href="{{ config('services.github.issues') }}" target="_blank" rel="noopener" title="github.com"><i class="fab fa-github mr-2"></i>Github</a></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

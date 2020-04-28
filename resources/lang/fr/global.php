@@ -6,6 +6,9 @@ return [
     'copyright' => '&copy; :date <a href=":route">:name</a>. Tous les droits sont réservés.',
     'environment' => '<b>Environnement</b> :environment',
     'social_networks_baseline' => 'Suivez nous sur les réseaux sociaux',
+    'our_news' => 'Notre actualité',
+    'next_features' => 'Prochaines fonctionnalités',
+    'bugs_reported' => 'Bugs rapportés',
 
     'add' => 'Ajouter',
     'cancel' => 'Annuler',

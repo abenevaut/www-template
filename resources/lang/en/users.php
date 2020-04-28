@@ -38,8 +38,8 @@ return [
     'home' => 'Home',
     'dashboard' => 'Dashboard',
     'change_password' => 'Change your password',
-    'change_email' => 'It is not yet possible to change his email address, but you can request it on <a href=":contact_url">contact page</a>.',
-    'baseline' => 'A Laravel Framework template for web application.',
+    'change_email' => 'Change your email',
+    'baseline' => 'A Laravel Framework template for web application',
     'terms' => 'Terms of Service',
     'anonymous.meta.description_terms' => "",
     'terms-of-services' => '<h2>Introduction</h2>
@@ -142,6 +142,8 @@ return [
     'profiles.birth_date' => 'Date de naissance',
     'profiles.providers_tokens' => 'Lier vos comptes sociaux',
     'profiles.edit.title' => 'Profil utilisateur',
+
+    'profile.info.only_admin_can_view_following_data' => 'Only you and administrators can view the following information',
 
     'reports.title' => 'Reports',
     'reports.no_report' => 'No report',
