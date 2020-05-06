@@ -16,7 +16,7 @@
         "test": "cross-env NODE_ENV=testing nyc npm run mocha"
     },
     "devDependencies": {
-        "@sentry/browser": "^5.13.2",
+        "@sentry/browser": "^5.15.5",
         "@sentry/integrations": "^5.15.5",
         "@sentry/types": "^5.13.2",
         "@vue/babel-preset-app": "^3.11.0",
