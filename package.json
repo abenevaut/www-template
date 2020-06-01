@@ -42,7 +42,7 @@
         "jquery": "^3.5",
         "jsdom": "^16.2.2",
         "jsdom-global": "^3.0.2",
-        "laravel-echo": "^1.6.1",
+        "laravel-echo": "^1.8.0",
         "laravel-mix": "^5.0.4",
         "lodash": "^4.17.13",
         "mocha": "^6.0.0",
